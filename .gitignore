@@ -1,0 +1,5 @@
+# ignore heavy directories and secret files
+node_modules/
+dist/
+.env
+.csv

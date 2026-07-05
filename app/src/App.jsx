@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 
-const BASE_URL = 'http://127.0.0.1:5000';
+// const BASE_URL = 'http://127.0.0.1:5000';
 
 function PlusIcon() {
   return (
@@ -192,7 +192,7 @@ export default function App() {
 
   const fetchProfileDetails = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
         setUserEmail(data.user?.email || '');
@@ -206,7 +206,7 @@ export default function App() {
 
   const fetchCloudModels = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/developer/models?user_id=${userId}`);
+      const res = await fetch(`/developer/models?user_id=${userId}`);
       if (res.ok) {
         const data = await res.json();
         setMyModels(data.models || []);
@@ -298,7 +298,7 @@ export default function App() {
     formData.append('file', csvFile);
 
     try {
-      const res = await fetch(`${BASE_URL}/inspect-csv`, { method: 'POST', body: formData });
+      const res = await fetch(`/inspect-csv`, { method: 'POST', body: formData });
       if (res.ok) {
         const data = await res.json();
         setCsvColumns(data.columns || []);
@@ -324,7 +324,7 @@ export default function App() {
     selectedFeatures.forEach((feature) => formData.append('features', feature));
 
     try {
-      const res = await fetch(`${BASE_URL}/targets-features-train`, { method: 'POST', body: formData });
+      const res = await fetch(`/targets-features-train`, { method: 'POST', body: formData });
       if (res.ok) {
         setRunningOperations((current) => [
           { id: Date.now(), label: modelName || 'New model' },
@@ -367,7 +367,7 @@ export default function App() {
     const syncRunningOperations = async () => {
       if (!userId || !token) return;
       try {
-        const res = await fetch(`${BASE_URL}/developer/active-jobs?user_id=${userId}`, {
+        const res = await fetch(`/developer/active-jobs?user_id=${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {
@@ -398,7 +398,7 @@ export default function App() {
     }
 
     try {
-      const res = await fetch(`${BASE_URL}/targets-features-cancel`, {
+      const res = await fetch(`/targets-features-cancel`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -439,7 +439,7 @@ export default function App() {
     setPredictionResult(null);
 
     try {
-      const res = await fetch(`${BASE_URL}/v1/predict`, {
+      const res = await fetch(`/v1/predict`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -484,7 +484,7 @@ export default function App() {
               <button className="button button-primary" disabled={isAuthLoading} onClick={async () => {
                 setIsAuthLoading(true);
                 try {
-                  const res = await fetch(`${BASE_URL}/auth/login`, {
+                  const res = await fetch(`/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: authEmail, password: authPassword }),
@@ -525,7 +525,7 @@ export default function App() {
                 }
                 setIsAuthLoading(true);
                 try {
-                  const res = await fetch(`${BASE_URL}/auth/register`, {
+                  const res = await fetch(`/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: authEmail, password: authPassword }),
@@ -555,7 +555,7 @@ export default function App() {
               <button className="button button-primary" disabled={isAuthLoading} onClick={async () => {
                 setIsAuthLoading(true);
                 try {
-                  await fetch(`${BASE_URL}/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: authEmail }) });
+                  await fetch(`/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: authEmail }) });
                   setAuthView('otp');
                 } catch (err) {
                   console.error(err);
@@ -576,7 +576,7 @@ export default function App() {
               <button className="button button-primary" disabled={isAuthLoading} onClick={async () => {
                 setIsAuthLoading(true);
                 try {
-                  const res = await fetch(`${BASE_URL}/auth/reset-password-otp`, {
+                  const res = await fetch(`/auth/reset-password-otp`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: authEmail, otp: authOtp, new_password: authPassword }),
@@ -942,7 +942,7 @@ export default function App() {
                           </div>
                         </div>
                         <div className="model-preview-footer">
-                          <a className="icon-button icon-button-ghost" href={`${BASE_URL}/developer/models/download/${model.id}`}><DownloadIcon /></a>
+                          <a className="icon-button icon-button-ghost" href={`/developer/models/download/${model.id}`}><DownloadIcon /></a>
                           <div className="menu-wrap">
                             <button className="icon-button icon-button-ghost" onClick={() => setDetailsMenuOpen((current) => current === model.id ? null : model.id)}><MoreIcon /></button>
                             {detailsMenuOpen === model.id && (
@@ -1031,11 +1031,11 @@ export default function App() {
                 <h3>Instructions</h3>
                 <p>Step 1: Connect to the prediction endpoint using your bearer token.</p>
                 <div className="code-block">
-                  <pre>{`curl -X POST "${BASE_URL}/v1/predict" \\
+                  <pre>{`curl -X POST "/v1/predict" \\
 -H "Authorization: Bearer ${selectedModel?.api_key || 'YOUR_TOKEN'}" \\
 -H "Content-Type: application/json" \\
 -d '{"feature_1": 0.1, "feature_2": 0.2}'`}</pre>
-                  <button className="icon-button icon-button-ghost" type="button" onClick={() => handleCopyText(`curl -X POST "${BASE_URL}/v1/predict" ...`, 'instructions')}>
+                  <button className="icon-button icon-button-ghost" type="button" onClick={() => handleCopyText(`curl -X POST "/v1/predict" ...`, 'instructions')}>
                     {isCopying.instructions ? 'Copied!' : <CopyIcon />}
                   </button>
                 </div>
@@ -1055,8 +1055,8 @@ export default function App() {
                 </div>
                 <p>API URL</p>
                 <div className="secret-card">
-                  <span>{`${BASE_URL}/v1/predict`}</span>
-                  <button className="icon-button icon-button-ghost" type="button" onClick={() => handleCopyText(`${BASE_URL}/v1/predict`, 'url')}>
+                  <span>{`/v1/predict`}</span>
+                  <button className="icon-button icon-button-ghost" type="button" onClick={() => handleCopyText(`/v1/predict`, 'url')}>
                     {isCopying.url ? 'Copied!' : <CopyIcon />}
                   </button>
                 </div>

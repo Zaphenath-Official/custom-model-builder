@@ -699,5 +699,7 @@ def execute_automl_tournament(X, y, num_cols, cat_cols, is_regression=True, targ
     return production_package, specific_path
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    # Railway passes a dynamic PORT variable; fallback to 5000 locally
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

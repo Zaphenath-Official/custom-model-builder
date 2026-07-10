@@ -1,7 +1,6 @@
 
 # 🚀 Autonomous Multi-Model Tournament AutoML Engine
 
-[![Live Deployment](https://img.shields.io/badge/Demo-Live%20on%20Vercel-blueviolet?style=for-the-badge&logo=vercel)](https://custom-model-builder.vercel.app/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python)](https://www.python.org)
 [![Backend](https://img.shields.io/badge/Backend-Flask%20%2F%20ThreadPool-orange?style=for-the-badge&logo=flask)](https://flask.palletsprojects.com/)
 [![Database](https://img.shields.io/badge/Database-Supabase%20%2F%20PostgreSQL-green?style=for-the-badge&logo=supabase)](https://supabase.com)

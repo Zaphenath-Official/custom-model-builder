@@ -190,9 +190,11 @@ export default function App() {
     }
   }, [activeModal]);
 
+  const BASE_URL = import.meta.env.VITE_API_URL || '';
+
   const fetchProfileDetails = async () => {
     try {
-      const res = await fetch(`/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
         setUserEmail(data.user?.email || '');
@@ -206,7 +208,7 @@ export default function App() {
 
   const fetchCloudModels = async () => {
     try {
-      const res = await fetch(`/api/developer/models?user_id=${userId}`);
+      const res = await fetch(`${BASE_URL}/api/developer/models?user_id=${userId}`);
       if (res.ok) {
         const data = await res.json();
         setMyModels(data.models || []);
@@ -298,7 +300,7 @@ export default function App() {
     formData.append('file', csvFile);
 
     try {
-      const res = await fetch(`/api/inspect-csv`, { method: 'POST', body: formData });
+      const res = await fetch(`${BASE_URL}/api/inspect-csv`, { method: 'POST', body: formData });
       if (res.ok) {
         const data = await res.json();
         setCsvColumns(data.columns || []);
@@ -324,7 +326,7 @@ export default function App() {
     selectedFeatures.forEach((feature) => formData.append('features', feature));
 
     try {
-      const res = await fetch(`/api/targets-features-train`, { method: 'POST', body: formData });
+      const res = await fetch(`${BASE_URL}/api/targets-features-train`, { method: 'POST', body: formData });
       if (res.ok) {
         setRunningOperations((current) => [
           { id: Date.now(), label: modelName || 'New model' },
@@ -367,7 +369,7 @@ export default function App() {
     const syncRunningOperations = async () => {
       if (!userId || !token) return;
       try {
-        const res = await fetch(`/api/developer/active-jobs?user_id=${userId}`, {
+        const res = await fetch(`${BASE_URL}/api/developer/active-jobs?user_id=${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {
@@ -398,7 +400,7 @@ export default function App() {
     }
 
     try {
-      const res = await fetch(`/api/targets-features-cancel`, {
+      const res = await fetch(`${BASE_URL}/api/targets-features-cancel`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -439,7 +441,7 @@ export default function App() {
     setPredictionResult(null);
 
     try {
-      const res = await fetch(`/api/v1/predict`, {
+      const res = await fetch(`${BASE_URL}/api/v1/predict`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -484,7 +486,7 @@ export default function App() {
               <button className="button button-primary" disabled={isAuthLoading} onClick={async () => {
                 setIsAuthLoading(true);
                 try {
-                  const res = await fetch(`/api/auth/login`, {
+                  const res = await fetch(`${BASE_URL}/api/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: authEmail, password: authPassword }),
@@ -525,7 +527,7 @@ export default function App() {
                 }
                 setIsAuthLoading(true);
                 try {
-                  const res = await fetch(`/api/auth/register`, {
+                  const res = await fetch(`${BASE_URL}/api/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: authEmail, password: authPassword }),
@@ -555,7 +557,7 @@ export default function App() {
               <button className="button button-primary" disabled={isAuthLoading} onClick={async () => {
                 setIsAuthLoading(true);
                 try {
-                  await fetch(`/api/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: authEmail }) });
+                  await fetch(`${BASE_URL}/api/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: authEmail }) });
                   setAuthView('otp');
                 } catch (err) {
                   console.error(err);
@@ -576,7 +578,7 @@ export default function App() {
               <button className="button button-primary" disabled={isAuthLoading} onClick={async () => {
                 setIsAuthLoading(true);
                 try {
-                  const res = await fetch(`/api/auth/reset-password-otp`, {
+                  const res = await fetch(`${BASE_URL}/api/auth/reset-password-otp`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: authEmail, otp: authOtp, new_password: authPassword }),
